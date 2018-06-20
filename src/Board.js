@@ -79,11 +79,20 @@
     //
     // test if a specific row on this board contains a conflict
     hasRowConflictAt: function(rowIndex) {
-      return false; // fixme
+      if (this.attributes[rowIndex].reduce((total, value) => total + value) > 1){
+        return true;
+      }
+       return false; // fixme
     },
 
     // test if any rows on this board contain conflicts
     hasAnyRowConflicts: function() {
+      for (let i = 0; i < Object.keys(this.attributes).length - 1; i++) {
+        if (this.attributes[i].reduce((total, value) => total + value) > 1){
+          return true;
+        }
+      }
+// console.log(Object.keys(this.attributes).length)
       return false; // fixme
     },
 
@@ -94,12 +103,34 @@
     //
     // test if a specific column on this board contains a conflict
     hasColConflictAt: function(colIndex) {
-      return false; // fixme
+      let col = []
+      for (let i = 0; i < Object.keys(this.attributes).length - 1; i++){
+        col.push(this.attributes[i][colIndex])
+      }
+      if (col.reduce((total, value) => total + value) > 1){
+        return true;
+      }
+       return false; // fixme
     },
 
     // test if any columns on this board contain conflicts
     hasAnyColConflicts: function() {
-      return false; // fixme
+      let num = Object.keys(this.attributes).length - 1;
+      //for every row
+      for (let i = 0; i < num; i++){
+        //we will make a column collection
+         let col = []
+         // and iterate through the row
+         for (let j = 0; j < num; j++){
+          // and push 
+           col.push(this.attributes[j][i])
+         }
+         if (col.reduce((total, value) => total + value) > 1){
+           return true;
+         }
+      }
+       return false; // fixme
+
     },
 
 
@@ -109,6 +140,10 @@
     //
     // test if a specific major diagonal on this board contains a conflict
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
+      let diagonal = [];
+      console.log(majorDiagonalColumnIndexAtFirstRow)
+
+
       return false; // fixme
     },
 
@@ -146,3 +181,12 @@
   };
 
 }());
+
+var testBoard = [
+[1,0,0,0],
+[0,1,0,0],
+[0,0,0,0],
+[0,0,0,0],
+]  
+
+var board = new Board(testBoard)
