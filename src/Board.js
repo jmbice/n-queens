@@ -62,7 +62,7 @@
     },
 
 
-/*
+    /*
          _             _     _
      ___| |_ __ _ _ __| |_  | |__   ___ _ __ ___ _
     / __| __/ _` | '__| __| | '_ \ / _ \ '__/ _ (_)
@@ -79,20 +79,19 @@
     //
     // test if a specific row on this board contains a conflict
     hasRowConflictAt: function(rowIndex) {
-      if (this.attributes[rowIndex].reduce((total, value) => total + value) > 1){
+      if (this.attributes[rowIndex].reduce((total, value) => total + value) > 1) {
         return true;
       }
-       return false; // fixme
+      return false; // fixme
     },
 
     // test if any rows on this board contain conflicts
     hasAnyRowConflicts: function() {
       for (let i = 0; i < Object.keys(this.attributes).length - 1; i++) {
-        if (this.attributes[i].reduce((total, value) => total + value) > 1){
+        if (this.attributes[i].reduce((total, value) => total + value) > 1) {
           return true;
         }
       }
-// console.log(Object.keys(this.attributes).length)
       return false; // fixme
     },
 
@@ -103,34 +102,33 @@
     //
     // test if a specific column on this board contains a conflict
     hasColConflictAt: function(colIndex) {
-      let col = []
-      for (let i = 0; i < Object.keys(this.attributes).length - 1; i++){
-        col.push(this.attributes[i][colIndex])
+      let col = [];
+      for (let i = 0; i < Object.keys(this.attributes).length - 1; i++) {
+        col.push(this.attributes[i][colIndex]);
       }
-      if (col.reduce((total, value) => total + value) > 1){
+      if (col.reduce((total, value) => total + value) > 1) {
         return true;
       }
-       return false; // fixme
+      return false; // fixme
     },
 
     // test if any columns on this board contain conflicts
     hasAnyColConflicts: function() {
       let num = Object.keys(this.attributes).length - 1;
       //for every row
-      for (let i = 0; i < num; i++){
+      for (let i = 0; i < num; i++) {
         //we will make a column collection
-         let col = []
-         // and iterate through the row
-         for (let j = 0; j < num; j++){
+        let col = [];
+        // and iterate through the row;
+        for (let j = 0; j < num; j++) {
           // and push 
-           col.push(this.attributes[j][i])
-         }
-         if (col.reduce((total, value) => total + value) > 1){
-           return true;
-         }
+          col.push(this.attributes[j][i]);
+        }
+        if (col.reduce((total, value) => total + value) > 1) {
+          return true;
+        }
       }
-       return false; // fixme
-
+      return false; // fixme
     },
 
 
@@ -140,16 +138,46 @@
     //
     // test if a specific major diagonal on this board contains a conflict
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
-      let diagonal = [];
-      console.log(majorDiagonalColumnIndexAtFirstRow)
-
-
-      return false; // fixme
+      var checkColumnFrom = majorDiagonalColumnIndexAtFirstRow;
+      let board = Object.keys(this.attributes).length - 1;
+      var diag = [];
+          
+      for (var d = 0; d < board; d++) {
+        //push all diagonal values from each row index
+        diag.push(this.attributes[0 + d][checkColumnFrom + d]);
+      }
+      //use reduce to sum each row[r]'s diagonal array, if greater than 1, return true; else continue
+      if (
+        diag.reduce(function(prev, curr) {
+          curr === undefined ? curr = 0 : null;
+          return prev = prev + curr;
+        }, 0)
+      > 1) { return true; } else {
+        return false;
+      }
     },
 
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
-      return false; // fixme
+      let board = Object.keys(this.attributes).length - 1;
+      //iterate rows, starting with negative rows        
+      for (var r = 1 - board; r <= board + 3; r++) {
+        let diag = [];
+        //create loop to get +diagonal values
+        for (var d = 0; d < board; d++) {
+          //push all diagonal values from each row index
+          diag.push(this.attributes[0 + d][r + d]);
+        }
+        //use reduce to sum each row[r]'s diagonal array, if greater than 1, return true; else continue
+        if (
+          diag.reduce(function(prev, curr) {
+            curr === undefined ? curr = 0 : null;
+            return prev = prev + curr;
+          }, 0)
+        > 1) { return true; }
+      }
+      //if after complete iteration, no duplicates on diagonal are false, return false
+      return false;
     },
 
 
@@ -159,12 +187,46 @@
     //
     // test if a specific minor diagonal on this board contains a conflict
     hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow) {
-      return false; // fixme
+      var checkColumnFrom = minorDiagonalColumnIndexAtFirstRow;
+      let board = Object.keys(this.attributes).length - 1;
+      var diag = [];
+          
+      for (var d = 0; d < board; d++) {
+        //push all diagonal values from each row index
+        diag.push(this.attributes[0 + d][checkColumnFrom - d]);
+      }
+      //use reduce to sum each row[r]'s diagonal array, if greater than 1, return true; else continue
+      if (
+        diag.reduce(function(prev, curr) {
+          curr === undefined ? curr = 0 : null;
+          return prev = prev + curr;
+        }, 0)
+      > 1) { return true; } else {
+        return false;
+      }
     },
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
-      return false; // fixme
+      let board = Object.keys(this.attributes).length - 1;
+      //iterate rows, starting with positive rows that exceed the board       
+      for (var r = 2 * (board - 1); r >= 0; r--) {
+        let diag = [];
+        //create loop to get +diagonal values
+        for (var d = 0; d < board; d++) {
+          //push all diagonal values from each row index by adding them for each r
+          diag.push(this.attributes[0 + d][r - d]);
+        }
+        //use reduce to sum each row[r]'s diagonal array, if greater than 1, return true; else continue
+        if (
+          diag.reduce(function(prev, curr) {
+            curr === undefined ? curr = 0 : null;
+            return prev = prev + curr;
+          }, 0)
+        > 1) { return true; }
+      }
+      //if after complete iteration, no duplicates on diagonal are false, return false
+      return false;
     }
 
     /*--------------------  End of Helper Functions  ---------------------*/
@@ -183,10 +245,10 @@
 }());
 
 var testBoard = [
-[1,0,0,0],
-[0,1,0,0],
-[0,0,0,0],
-[0,0,0,0],
-]  
+  [0, 1, 0, 0],
+  [1, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+]; 
 
-var board = new Board(testBoard)
+var board = new Board(testBoard);
